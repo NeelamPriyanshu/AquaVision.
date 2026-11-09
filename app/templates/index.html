@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaVision | Underwater Detection</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="/">AquaVision</a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMenu">
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#home">Home</a>
+                <a class="nav-link" href="#about">About</a>
+                <a class="nav-link" href="#detection">Detection</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main heading -->
+<main id="home">
+
+    <section class="hero container">
+        <div class="hero-tag">DEEP LEARNING · COMPUTER VISION</div>
+
+        <h1>Underwater Object Detection</h1>
+
+        <p>
+            An AI-powered system that identifies and classifies
+            objects in underwater images using the YOLOv8 model.
+        </p>
+
+        <a href="#detection" class="primary-btn">Start Detection</a>
+    </section>
+
+    <!-- Detection -->
+    <section class="container detection-section" id="detection">
+
+        <div class="section-title">
+            <h2>Image Detection</h2>
+            <p>Upload an underwater image to analyze its contents.</p>
+        </div>
+
+        <div class="upload-card">
+
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+
+                <label for="image" class="form-label">
+                    Select an image
+                </label>
+
+                <input
+                    type="file"
+                    name="image"
+                    id="image"
+                    class="form-control"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    required
+                >
+
+                <small class="help-text">
+                    Supported formats: JPG, JPEG, PNG and WEBP
+                </small>
+
+                <button type="submit" class="primary-btn submit-btn">
+                    Analyze Image
+                </button>
+
+            </form>
+
+            {% if result_image %}
+
+            <div class="results">
+
+                <div class="result-title">
+                    <h3>Detection Results</h3>
+                    <span class="status">Analysis completed</span>
+                </div>
+
+                <div class="image-container">
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + result_image) }}"
+                        alt="Annotated detection result"
+                    >
+                </div>
+
+                <h4>Detected Objects</h4>
+
+                {% if detections %}
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Object Class</th>
+                                <th>Confidence Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in detections %}
+                            <tr>
+                                <td>{{ item.class_name | upper }}</td>
+                                <td>{{ item.confidence }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% else %}
+                    <p class="no-result">
+                        No objects detected. Please try another image.
+                    </p>
+                {% endif %}
+
+                <a href="#detection" class="secondary-btn">
+                    Analyze Another Image
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="about-section" id="about">
+        <div class="container about-content">
+            <h2>About AquaVision</h2>
+
+            <p>
+                AquaVision is an underwater object detection and
+                classification system developed using deep learning.
+                It uses YOLOv8 to identify three predefined classes:
+                Plastic, Bio and ROV.
+            </p>
+
+            <div class="technology">
+                <div>
+                    <strong>YOLOv8</strong>
+                    <span>Detection Model</span>
+                </div>
+                <div>
+                    <strong>3 Classes</strong>
+                    <span>Object Categories</span>
+                </div>
+                <div>
+                    <strong>Flask</strong>
+                    <span>Web Framework</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <span>AquaVision</span>
+        <p>AI-Powered Underwater Object Detection System</p>
+        <small>Academic Project | 2026</small>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
